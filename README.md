@@ -1,4 +1,4 @@
-* [Reports](https://priyas4.github.io/cs350-lab4-reports/)
+* [Reports](https://odu-cs350-f26.github.io/CS350--lab4-documentation--priyas4/)
 
 # WordCounter
 

@@ -46,7 +46,8 @@ tasks.register('reports') {
 }
 
 gitPublish {
-    repoUri = 'https://github.com/priyas4/cs350-lab4-reports.git'
+    repoUri = providers.gradleProperty('reportsRepo').getOrElse(
+        'git@github.com:ODU-CS350-F26/CS350--lab4-documentation--priyas4.git')
     branch = 'gh-pages'
     contents {
         from layout.buildDirectory.dir('reports')
