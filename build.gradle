@@ -1,13 +1,12 @@
 plugins {
-   id 'java'
-   id 'application'
-   id 'org.ajoberstar.git-publish' version '4.2.0'
+    id 'java'
+    id 'application'
+    id 'org.ajoberstar.git-publish' version '4.2.0'
 }
 
 repositories {
     mavenCentral()
 }
-
 
 java {
     sourceCompatibility = JavaVersion.toVersion(11)
@@ -16,18 +15,50 @@ java {
 
 dependencies {
     testImplementation 'org.junit.jupiter:junit-jupiter:5.7.0'
+    testRuntimeOnly 'org.junit.platform:junit-platform-launcher:1.7.0'
     testImplementation 'org.hamcrest:hamcrest-library:2.2'
 }
 
-tasks.withType(Test) {
+tasks.withType(Test).configureEach {
     useJUnitPlatform()
-    ignoreFailures = true
     testLogging {
-        events "passed", "skipped", "failed"
-        }
+        events 'passed', 'skipped', 'failed'
+    }
 }
 
-application { //Allows  ./gradlew run --args=path-to-test-data
+application {
     mainClass = 'edu.odu.cs.MostCommonWords'
 }
 
+tasks.register('copyReportIndex', Copy) {
+    from 'src/main/html'
+    into layout.buildDirectory.dir('reports')
+}
+
+tasks.register('copyDocs', Copy) {
+    dependsOn tasks.named('javadoc')
+    from layout.buildDirectory.dir('docs')
+    into layout.buildDirectory.dir('reports')
+}
+
+tasks.register('reports') {
+    dependsOn tasks.named('build'), tasks.named('copyReportIndex'), tasks.named('copyDocs')
+}
+
+gitPublish {
+    repoUri = 'https://github.com/priyas4/cs350-lab4-reports.git'
+    branch = 'gh-pages'
+    contents {
+        from layout.buildDirectory.dir('reports')
+    }
+    commitMessage = 'Publish project test and JavaDoc reports'
+}
+
+// Generate the complete report tree before the publisher copies it.
+tasks.named('gitPublishCopy') {
+    dependsOn tasks.named('reports')
+}
+
+tasks.register('deployReports') {
+    dependsOn tasks.named('gitPublishPush')
+}

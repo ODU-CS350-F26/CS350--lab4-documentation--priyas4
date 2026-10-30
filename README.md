@@ -1,3 +1,5 @@
+* [Reports](https://priyas4.github.io/cs350-lab4-reports/)
+
 # WordCounter
 
 There are a number of applications in which it is useful to know what the most
